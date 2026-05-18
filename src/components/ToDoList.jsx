@@ -12,18 +12,24 @@ import {useState} from 'react';
 import ToDo from './ToDo';
 import { v4 as uuidv4 } from 'uuid';
 import {TodosContext} from '../contexts/ToDoContext'
-import {useContext} from 'react';
-import {useEffect} from 'react';
-
-
+import {useContext,} from 'react';
+import {useEffect,useMemo} from 'react';
+import {useToast} from '../contexts/ToastContext'
 export default function ToDoList() {
   
   const {todos,settodos}=useContext(TodosContext);
   const [titleinput,settitleinput]=useState("")
   const [displaytodostype,setdisplaytodostype]=useState("All");
-  const completedtodos = todos.filter((t) => t.isCompleted);
-  const notcompletedtodos = todos.filter((t) => !t.isCompleted);
+  const {showhidetoast}=useToast()
+  const completedtodos =useMemo(()=>{
+    return todos.filter((t) => t.isCompleted)
 
+    },[todos]);
+
+  const notcompletedtodos = useMemo(()=>{
+    return todos.filter((t) => !t.isCompleted)
+  },[todos]);
+  
     let todosrender=todos;
     if(displaytodostype=="Finished"){
       todosrender=completedtodos;
@@ -54,7 +60,8 @@ useEffect(() => {
     const updatetodos=[...todos,newtodo]
     settodos(updatetodos)
     localStorage.setItem("todos",JSON.stringify(updatetodos));
-settitleinput("");
+    settitleinput("");
+    showhidetoast("The task has been added")
   }
 
 function changedisplaytodostype(e){
@@ -64,6 +71,7 @@ function changedisplaytodostype(e){
   
   
   return (
+    <>
     <Container maxWidth="sm" sx={{ py: 4 }}>
       <Card sx={{ borderRadius: 4, boxShadow: 3 }} style={{maxHeight:"80vh",overflow:"scroll"}}>
         <CardContent sx={{ p: 3 }}>
@@ -135,5 +143,6 @@ function changedisplaytodostype(e){
         </CardContent>
       </Card>
     </Container>
+    </>
   );
 }

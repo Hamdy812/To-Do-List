@@ -4,7 +4,7 @@ import {TodosContext} from './contexts/ToDoContext'
 import { createTheme , ThemeProvider } from '@mui/material/styles';
 import { v4 as uuidv4 } from 'uuid';
 import {useState} from 'react';
-
+import {ToastProvider} from '../src/contexts/ToastContext'
 
 const itodos = [
   { id: uuidv4(), title: "Read Book", details: "Read a Story Book", isCompleted: false },
@@ -19,10 +19,13 @@ const themes = createTheme({
 })
 function App() {
   const [todos,settodos]=useState(itodos);
+  
 
   return (
     <>
     <ThemeProvider theme={themes}>
+      <ToastProvider>
+
 
    <div 
   className="App" 
@@ -34,12 +37,15 @@ function App() {
     background:"#455a64",
   }}
 >
+    
+
   <TodosContext.Provider  value={{todos,settodos}}>
 
   <ToDoList />
   </TodosContext.Provider >
 </div>
-    </ThemeProvider>
+</ToastProvider>   
+ </ThemeProvider>
     </>
   )
 }

@@ -15,14 +15,16 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
+import {useToast} from '../contexts/ToastContext'
 
 
 export default function ToDoa({todo}) {
   const [updatedtodo,setupdatedtodo]=useState({title:todo.title,details:todo.details});
   const [showdeletedialog,setshowdeletedialog]=useState(false);
   const [showupdatedialog,setshowupdatedialog]=useState(false);
+  const {todos,settodos}=useContext(TodosContext);
+  const { showhidetoast } = useToast();
 
-    const {todos,settodos}=useContext(TodosContext);
   function handelcheckclick(){
     const updatedtodos=todos.map((t)=>{
       if(t.id==todo.id){
@@ -33,7 +35,7 @@ export default function ToDoa({todo}) {
 
     settodos(updatedtodos)
     localStorage.setItem("todos",JSON.stringify(updatedtodos));
-    
+    showhidetoast("The Task is complete.")
   }
 
   function handledeleteclick(){
@@ -50,8 +52,7 @@ export default function ToDoa({todo}) {
     })
     settodos(updatedtodos);
         localStorage.setItem("todos",JSON.stringify(updatedtodos))??[];
-
-  }
+showhidetoast("The Task is deleted.","error")  }
 
   function showupdatedialogg(){
     setshowupdatedialog(true);
@@ -71,17 +72,16 @@ export default function ToDoa({todo}) {
     settodos(updatedtodos);
     setshowupdatedialog(false);
     localStorage.setItem("todos",JSON.stringify(updatedtodos));
-
-    
+    showhidetoast("The Task is updated.")
   }
 
-  return (
+return (
 <>
-
       {/**deletaion dialog */}
 
     <Dialog
-    onClose={handledeleteclose}
+        
+        onClose={handledeleteclose}
         open={showdeletedialog}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
